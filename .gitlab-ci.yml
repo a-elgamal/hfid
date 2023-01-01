@@ -11,13 +11,13 @@ sast:
   stage: test
 
 lint:
-  image: golang:1.19-buster
+  image: golang:1.19
   stage: test
   script:
     - make lint
 
 coverage:
-  image: golang:1.19-buster
+  image: golang:1.19
   stage: test
   script:
     - make test
