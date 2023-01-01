@@ -19,6 +19,8 @@ lint:
 coverage:
   image: golang:1.19
   stage: test
+  before_script:
+    - apt-get install -y bc
   script:
     - make test
   coverage: '/\d+\.\d+/'
