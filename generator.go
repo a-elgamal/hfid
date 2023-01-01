@@ -1,6 +1,7 @@
 package hfid
 
 import (
+	"context"
 	"fmt"
 	"strings"
 )
@@ -20,15 +21,15 @@ type GeneratorStore interface {
 	// InsertOrGet a Generator. The function returns the Generator that has been created or found in the store and an
 	// estimate number of HFIDs that have been generated using this generator using the associated hyperloglog (0 if the
 	// generator was created)
-	InsertOrGet(g Generator) (Generator, int64, error)
+	InsertOrGet(ctx context.Context, g Generator) (Generator, int64, error)
 
 	// Upsert a Generator. If an existing Generator with the same name was found, update it without changing the
 	// hyperloglog attached to it. Otherwise, Insert a new Generator with a new hyperloglog.
-	Upsert(g Generator) (Generator, error)
+	Upsert(ctx context.Context, g Generator) (Generator, error)
 
 	// Add hfid to the hyperloglog associated with the generator named gName. Return true if the hyperloglog was changed
 	// , false otherwise.
-	Add(hfid int64, gName string) (bool, error)
+	Add(ctx context.Context, hfid int64, gName string) (bool, error)
 }
 
 // NewGenerator creates a new Generator after validating the arguments

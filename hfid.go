@@ -3,6 +3,7 @@
 package hfid
 
 import (
+	"context"
 	"math/rand"
 	"time"
 )
@@ -12,9 +13,9 @@ var defaultRand = *rand.New(rand.NewSource(time.Now().UnixNano()))
 // HFID generates a new HFID. If you would like to have deterministic way of generating HFIDs, pass a Rand object,
 // otherwise a non-deterministic Rand object will be used. It is recommended to wrap calls to this function with a
 // circuit breaker that falls back to a normal UUID when open.
-func HFID(g Generator, s GeneratorStore, dr ...rand.Rand) (string, error) {
+func HFID(ctx context.Context, g Generator, s GeneratorStore, dr ...rand.Rand) (string, error) {
 	// Fetch or create the generator
-	g, c, err := s.InsertOrGet(g)
+	g, c, err := s.InsertOrGet(ctx, g)
 	if err != nil {
 		return "", err
 	}
@@ -26,7 +27,7 @@ func HFID(g Generator, s GeneratorStore, dr ...rand.Rand) (string, error) {
 	}
 	if c+1 > int64(float64(maxC)*0.5) {
 		g.Length++
-		g, err = s.Upsert(g)
+		g, err = s.Upsert(ctx, g)
 		if err != nil {
 			return "", err
 		}
@@ -48,7 +49,7 @@ func HFID(g Generator, s GeneratorStore, dr ...rand.Rand) (string, error) {
 	var hfid int64
 	for {
 		hfid = r.Int63n(max + 1)
-		isNew, err := s.Add(hfid, g.Name)
+		isNew, err := s.Add(ctx, hfid, g.Name)
 		if err != nil {
 			return "", err
 		}
