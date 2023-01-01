@@ -20,6 +20,7 @@ coverage:
   image: golang:1.19
   stage: test
   before_script:
+    - apt-get update
     - apt-get install -y bc
   script:
     - make test
