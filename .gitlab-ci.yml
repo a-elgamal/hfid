@@ -6,8 +6,27 @@
 # Note that environment variables can be set in several places
 # See https://docs.gitlab.com/ee/ci/variables/#cicd-variable-precedence
 stages:
-- test
+  - test
 sast:
   stage: test
+
+lint:
+  image: golang:1.19-buster
+  stage: test
+  script:
+    - make lint
+
+coverage:
+  image: golang:1.19-buster
+  stage: test
+  script:
+    - make test
+  coverage: '/\d+\.\d+/'
+  artifacts:
+    reports:
+      coverage_report:
+        coverage_format: cobertura
+        path: test/coverage.xml
+
 include:
-- template: Security/SAST.gitlab-ci.yml
+  - template: Security/SAST.gitlab-ci.yml
