@@ -40,7 +40,7 @@ the value would contain the generator attributes and a hyperloglog that tracks t
 far. The library allows you to pass the KV Store implementation that you prefer. Redis and Aerospike would work
 perfectly for this use case.
 
-### HFID Generation Algorithm
+## HFID Generation Algorithm
 
 1. Fetch the attributes of the Generator from the KV store
 2. Generate a random number in between ``(Number of Encoding Characters) ^ (Length - 1)``
@@ -49,4 +49,12 @@ perfectly for this use case.
     1. If the hyperloglog didn't have this number before, then encode the generated number into a new HFID.
     2. Otherwise, repeat from step #1
 4. Increment the ID Type length if the cardinality of the hyperloglog is high compared to the maximum number of HFIDs
-   that can be generated at the current ID Type Length. 
+   that can be generated at the current ID Type Length.
+
+## How to use with Redis?
+1. Add go dependency: `go get gitlab.com/alielgamal/hfid/redis`
+2. Create the HFID generator to your liking: `g, err := hfid.NewGenerator("Example", "E-", hfid.DefaultEncoding, 1, 1)`
+3. Create a GeneratorStore using the provided Redis implementation: `s := hfidredis.GeneratorStore{UniversalClient: uc}`
+4. Generate HFID: `hfid.HFID(ctx, *g, s)`
+
+See a working example using miniredis [here](redis/example/main.go)
