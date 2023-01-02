@@ -2,8 +2,8 @@ package hfid
 
 import "fmt"
 
-// Pow calculates a base int to the power of the exponent. Returns an error if the operation will result an overflow
-func Pow(base int, exp int) (int64, error) {
+// pow calculates a base int to the power of the exponent. Returns an error if the operation will result an overflow
+func pow(base int, exp int) (int64, error) {
 	result := int64(1)
 	for i := 0; i < exp; i++ {
 		newResult := result * int64(base)

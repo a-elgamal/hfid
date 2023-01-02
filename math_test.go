@@ -28,13 +28,13 @@ func TestPow(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			got, err := Pow(tt.args.base, tt.args.exp)
+			got, err := pow(tt.args.base, tt.args.exp)
 			if (err != nil) != tt.wantErr {
-				t.Errorf("Pow() error = %v, wantErr %v", err, tt.wantErr)
+				t.Errorf("pow() error = %v, wantErr %v", err, tt.wantErr)
 				return
 			}
 			if got != tt.want {
-				t.Errorf("Pow() got = %v, want %v", got, tt.want)
+				t.Errorf("pow() got = %v, want %v", got, tt.want)
 			}
 		})
 	}

@@ -59,7 +59,7 @@ func NewGenerator(name string, prefix string, e Encoding, minLength uint8, lengt
 }
 
 func (it Generator) maxHFID() (int64, error) {
-	maxPlus1, err := Pow(len(it.Encoding), int(it.Length))
+	maxPlus1, err := pow(len(it.Encoding), int(it.Length))
 	if err != nil {
 		return 0, err
 	}

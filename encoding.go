@@ -42,13 +42,13 @@ func (e Encoding) Encode(number int64) (string, error) {
 
 	// Figure out how many encoded bits are needed.
 	nBits := 1
-	for maxN, _ := Pow(len(e), nBits); maxN <= number; nBits++ {
-		maxN, _ = Pow(len(e), nBits+1)
+	for maxN, _ := pow(len(e), nBits); maxN <= number; nBits++ {
+		maxN, _ = pow(len(e), nBits+1)
 	}
 
 	result := ""
 	for i := nBits - 1; i >= 0; i-- {
-		m, _ := Pow(len(e), i)
+		m, _ := pow(len(e), i)
 		digitIndex := number / m
 		result += string(e[digitIndex])
 		number -= m * digitIndex
@@ -67,7 +67,7 @@ func (e Encoding) Decode(s string) (int64, error) {
 		if m < 0 {
 			return int64(0), fmt.Errorf("invalid character '%s' encountered while decoding '%s' using '%s'", string(s[i]), s, e)
 		}
-		m2, err := Pow(len(e), len(s)-i-1)
+		m2, err := pow(len(e), len(s)-i-1)
 		increment := m2 * int64(m)
 		result += increment
 		// Overflow detection
