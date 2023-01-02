@@ -57,4 +57,4 @@ perfectly for this use case.
 3. Create a GeneratorStore using the provided Redis implementation: `s := hfidredis.GeneratorStore{UniversalClient: uc}`
 4. Generate HFID: `hfid.HFID(ctx, *g, s)`
 
-See a working example using miniredis [here](redis/example/main.go)
+See a working example using miniredis [here](example/redis/main.go)
