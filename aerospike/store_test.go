@@ -34,7 +34,7 @@ func TestMain(m *testing.M) {
 
 func prepareStore(t *testing.T) GeneratorStore {
 	namespace := "test"
-	setName := strings.ReplaceAll(t.Name(), "/", "_")[:30]
+	setName := strings.ReplaceAll(t.Name(), "/", "_")[:60]
 	_ = aerospikeClient.Truncate(nil, namespace, setName, nil)
 
 	return GeneratorStore{
