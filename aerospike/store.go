@@ -21,19 +21,19 @@ const hllBin = "h"
 // HFID. This implementation utilizes a single set with a bin for the generator's properties and another bin for the
 // generator's associated HLL
 type GeneratorStore struct {
-	client    *aero.Client
-	namespace string
-	set       string
+	Client    *aero.Client
+	Namespace string
+	Set       string
 }
 
 // InsertOrGet Implemented using a single Operate command that creates the generator if it doesn't exist and reads the
 // generator properties and the HyperLogLog count estimate.
 func (gs GeneratorStore) InsertOrGet(_ context.Context, g hfid.Generator) (hfid.Generator, int64, error) {
-	key, aeroErr := aero.NewKey(gs.namespace, gs.set, g.Name)
+	key, aeroErr := aero.NewKey(gs.Namespace, gs.Set, g.Name)
 	merr := multierror.Append(aeroErr)
 
 	// Write the record to Aerospike spike ONLY if it doesn't exist.
-	r, aeroErr := gs.client.Operate(nil, key,
+	r, aeroErr := gs.Client.Operate(nil, key,
 		aero.MapPutItemsOp(aero.NewMapPolicyWithFlags(aero.MapOrder.UNORDERED, aero.MapWriteFlagsCreateOnly|aero.MapWriteFlagsNoFail),
 			gBin, map[interface{}]interface{}{
 				prefixKey:    g.Prefix,
@@ -83,10 +83,10 @@ func (gs GeneratorStore) InsertOrGet(_ context.Context, g hfid.Generator) (hfid.
 
 // Upsert Implemented using a single MapPutItemsOp command
 func (gs GeneratorStore) Upsert(_ context.Context, g hfid.Generator) error {
-	key, err := aero.NewKey(gs.namespace, gs.set, g.Name)
+	key, err := aero.NewKey(gs.Namespace, gs.Set, g.Name)
 	merr := multierror.Append(err)
 
-	_, err = gs.client.Operate(nil, key, aero.MapPutItemsOp(aero.DefaultMapPolicy(), gBin,
+	_, err = gs.Client.Operate(nil, key, aero.MapPutItemsOp(aero.DefaultMapPolicy(), gBin,
 		map[interface{}]interface{}{
 			prefixKey:    g.Prefix,
 			encodingKey:  g.Encoding,
@@ -118,10 +118,10 @@ func toInt(any interface{}) (int, error) {
 
 // Add Implemented using HLLAddOp command
 func (gs GeneratorStore) Add(_ context.Context, hfid int64, gName string) (bool, error) {
-	key, err := aero.NewKey(gs.namespace, gs.set, gName)
+	key, err := aero.NewKey(gs.Namespace, gs.Set, gName)
 	merr := multierror.Append(err)
 
-	r, err := gs.client.Operate(nil, key,
+	r, err := gs.Client.Operate(nil, key,
 		aero.HLLAddOp(aero.DefaultHLLPolicy(), hllBin,
 			[]aero.Value{aero.NewLongValue(hfid)}, 16, 4))
 	merr = multierror.Append(merr, err)

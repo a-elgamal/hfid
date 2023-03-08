@@ -38,9 +38,9 @@ func prepareStore(t *testing.T) GeneratorStore {
 	_ = aerospikeClient.Truncate(nil, namespace, setName, nil)
 
 	return GeneratorStore{
-		client:    aerospikeClient,
-		namespace: namespace,
-		set:       setName,
+		Client:    aerospikeClient,
+		Namespace: namespace,
+		Set:       setName,
 	}
 }
 
@@ -88,7 +88,7 @@ func TestGeneratorStore_InsertOrGet(t *testing.T) {
 
 	t.Run("returns an error when aerospike fails", func(t *testing.T) {
 		gs := prepareStore(t)
-		gs.namespace = "invalid_namespace"
+		gs.Namespace = "invalid_namespace"
 		g, err := hfid.NewGenerator(name, prefix, encoding, minLength, length)
 		assert.NoError(t, err)
 		_, c, err := gs.InsertOrGet(context.Background(), *g)
@@ -152,7 +152,7 @@ func TestGeneratorStore_Upsert(t *testing.T) {
 
 	t.Run("returns an error when aerospike fails", func(t *testing.T) {
 		gs := prepareStore(t)
-		gs.namespace = "invalid_namespace"
+		gs.Namespace = "invalid_namespace"
 		g, err := hfid.NewGenerator(name, prefix, encoding, minLength, length)
 		assert.NoError(t, err)
 		err = gs.Upsert(context.Background(), *g)
@@ -206,14 +206,14 @@ func TestGeneratorStore_Add(t *testing.T) {
 
 	t.Run("returns an error when the generator doesn't exist", func(t *testing.T) {
 		gs := prepareStore(t)
-		gs.namespace = "invalid_namespace"
+		gs.Namespace = "invalid_namespace"
 		_, err := gs.Add(context.Background(), 0, "non-existent")
 		assert.Error(t, err)
 	})
 
 	t.Run("returns an error when aerospike fails", func(t *testing.T) {
 		gs := prepareStore(t)
-		gs.namespace = "invalid_namespace"
+		gs.Namespace = "invalid_namespace"
 		_, err := gs.Add(context.Background(), 0, name)
 		assert.Error(t, err)
 	})
