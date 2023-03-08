@@ -41,9 +41,25 @@ $(BIN)/gotestsum: PACKAGE=gotest.tools/gotestsum@latest
 COVERAGE_MODE = atomic
 .PHONY: test
 test: lint
-test: | $(GOCOV) $(GOCOVXML) $(GOTESTSUM) ; $(info $(M) running coverage tests…) @ ## Run coverage tests
+test: | $(GOCOV) $(GOCOVXML) $(GOTESTSUM) ; $(info $(M) running coverage tests…) @ ## Run coverage tests locally
+	$(info $(M) starting aerospike container…)
+	$Q docker-compose -f aerospike/docker-compose.yml up -d
 	$Q mkdir -p test
 	$Q $(GOTESTSUM) -- \
+		-coverpkg=$(shell echo $(PKGS) | tr ' ' ',') \
+		-covermode=$(COVERAGE_MODE) \
+		-coverprofile=test/profile.out $(PKGS)
+	$(info $(M) stopping aerospike container…)
+	$Q docker-compose -f aerospike/docker-compose.yml down
+	$Q $(GO) tool cover -html=test/profile.out -o test/coverage.html
+	$Q $(GOCOV) convert test/profile.out | $(GOCOVXML) > test/coverage.xml
+	@echo "Code coverage: "; \
+		echo "scale=1;$$(sed -En 's/^<coverage line-rate="([0-9.]+)".*/\1/p' test/coverage.xml) * 100 / 1" | bc -q
+
+.PHONY: test-ci
+test-ci: | $(GOCOV) $(GOCOVXML) $(GOTESTSUM) ; $(info $(M) running coverage tests…) @ ## Run coverage tests in CI
+	$Q mkdir -p test
+	$Q AEROSPIKE_HOST=aerospike $(GOTESTSUM) -- \
 		-coverpkg=$(shell echo $(PKGS) | tr ' ' ',') \
 		-covermode=$(COVERAGE_MODE) \
 		-coverprofile=test/profile.out $(PKGS)

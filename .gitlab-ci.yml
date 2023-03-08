@@ -19,11 +19,14 @@ lint:
 coverage:
   image: golang:1.19
   stage: test
+  services:
+    - name: aerospike/aerospike-server
+      alias: aerospike
   before_script:
     - apt-get update
     - apt-get install -y bc
   script:
-    - make test
+    - make test-ci
   coverage: '/\d+\.\d+/'
   artifacts:
     reports:
