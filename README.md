@@ -58,3 +58,16 @@ perfectly for this use case.
 4. Generate HFID: `hfid.HFID(ctx, *g, s)`
 
 See a working example using miniredis [here](example/redis/main.go)
+
+## How to use with Aerospike?
+1. Add go dependency: `go get gitlab.com/alielgamal/hfid/aerospike`
+2. Create the HFID generator to your liking: `g, err := hfid.NewGenerator("Example", "E-", hfid.DefaultEncoding, 1, 1)`
+3. Create a GeneratorStore using the provided Aerospike implementation: ```
+   s := hfidaero.GeneratorStore{
+   client:    aerospikeClient,
+   namespace: namespace,
+   set:       setName,
+   }```
+4. Generate HFID: `hfid.HFID(ctx, *g, s)`
+
+See a working example [here](example/aerospike/main.go)
