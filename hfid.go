@@ -27,7 +27,7 @@ func HFID(ctx context.Context, g Generator, s GeneratorStore, dr ...rand.Rand) (
 	}
 	if c+1 > int64(float64(maxC)*0.5) {
 		g.Length++
-		g, err = s.Upsert(ctx, g)
+		err = s.Upsert(ctx, g)
 		if err != nil {
 			return "", err
 		}

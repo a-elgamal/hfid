@@ -36,7 +36,7 @@ func TestHFID(t *testing.T) {
 		t.Run("Upsert", func(t *testing.T) {
 			mgs := NewMockGeneratorStore(t)
 			mgs.On("InsertOrGet", ctx, *g).Return(*g, int64(6), nil)
-			mgs.On("Upsert", ctx, mock.Anything).Return(*g, fmt.Errorf("mock error"))
+			mgs.On("Upsert", ctx, mock.Anything).Return(fmt.Errorf("mock error"))
 			_, err := HFID(ctx, *g, mgs)
 			assert.Error(t, err)
 			mgs.AssertExpectations(t)
@@ -114,7 +114,7 @@ func TestHFID(t *testing.T) {
 		mgs.On("Add", ctx, int64(10), g.Name).Return(true, nil).Once()
 		newG := *g
 		newG.Length++
-		mgs.On("Upsert", ctx, newG).Return(newG, nil)
+		mgs.On("Upsert", ctx, newG).Return(nil)
 
 		hfid, err := HFID(ctx, *g, mgs, *rand.New(rand.NewSource(1)))
 		assert.Equal(t, "10", hfid)

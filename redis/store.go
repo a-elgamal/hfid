@@ -34,7 +34,7 @@ func (gs GeneratorStore) InsertOrGet(ctx context.Context, g hfid.Generator) (hfi
 
 	if getCmd.Val()[0] == nil {
 		// Insert the Generator
-		g, err := gs.Upsert(ctx, g)
+		err := gs.Upsert(ctx, g)
 		return g, 0, err
 	}
 	g.Prefix = getCmd.Val()[0].(string)
@@ -58,9 +58,9 @@ func (gs GeneratorStore) InsertOrGet(ctx context.Context, g hfid.Generator) (hfi
 }
 
 // Upsert Implemented using HMSet command
-func (gs GeneratorStore) Upsert(ctx context.Context, g hfid.Generator) (hfid.Generator, error) {
+func (gs GeneratorStore) Upsert(ctx context.Context, g hfid.Generator) error {
 	setCmd := gs.HMSet(ctx, g.Name, prefixKey, g.Prefix, encodingKey, string(g.Encoding), minLengthKey, g.MinLength, lengthKey, g.Length)
-	return g, setCmd.Err()
+	return setCmd.Err()
 }
 
 // Add Implemented using PFAdd command

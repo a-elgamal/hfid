@@ -118,9 +118,8 @@ func TestGeneratorStore_Upsert(t *testing.T) {
 
 		fixturesF(mr)
 
-		g2, err := gs.Upsert(context.Background(), g)
+		err := gs.Upsert(context.Background(), g)
 		assert.NoError(t, err)
-		assert.Equal(t, g, g2)
 		assert.Equal(t, g.Prefix, mr.HGet(g.Name, prefixKey))
 		assert.Equal(t, string(g.Encoding), mr.HGet(g.Name, encodingKey))
 		assert.Equal(t, strconv.Itoa(int(g.MinLength)), mr.HGet(g.Name, minLengthKey))
@@ -141,7 +140,7 @@ func TestGeneratorStore_Upsert(t *testing.T) {
 		uc := redis.NewUniversalClient(&redis.UniversalOptions{Addrs: []string{""}})
 		gs := GeneratorStore{uc}
 
-		_, err := gs.Upsert(context.Background(), hfid.Generator{})
+		err := gs.Upsert(context.Background(), hfid.Generator{})
 		assert.Error(t, err)
 	})
 }

@@ -25,7 +25,7 @@ type GeneratorStore interface {
 
 	// Upsert a Generator. If an existing Generator with the same name was found, update it without changing the
 	// hyperloglog attached to it. Otherwise, Insert a new Generator with a new hyperloglog.
-	Upsert(ctx context.Context, g Generator) (Generator, error)
+	Upsert(ctx context.Context, g Generator) error
 
 	// Add hfid to the hyperloglog associated with the generator named gName. Return true if the hyperloglog was changed
 	// , false otherwise.

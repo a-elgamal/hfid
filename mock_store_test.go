@@ -16,9 +16,9 @@ func (mgs *MockGeneratorStore) InsertOrGet(ctx context.Context, g Generator) (Ge
 	return args.Get(0).(Generator), args.Get(1).(int64), args.Error(2)
 }
 
-func (mgs *MockGeneratorStore) Upsert(ctx context.Context, g Generator) (Generator, error) {
+func (mgs *MockGeneratorStore) Upsert(ctx context.Context, g Generator) error {
 	args := mgs.MethodCalled("Upsert", ctx, g)
-	return args.Get(0).(Generator), args.Error(1)
+	return args.Error(0)
 }
 
 func (mgs *MockGeneratorStore) Add(ctx context.Context, hfid int64, gName string) (bool, error) {
